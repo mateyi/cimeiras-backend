@@ -40,7 +40,7 @@ const register = async (req, res) => {
 
     // 3) Insertar el usuario en la base de datos
 const { rows } = await db.query(
-  `INSERT INTO users (name, email, password)
+  `INSERT INTO users (name, email, password_hash)
    VALUES ($1, $2, $3)
    RETURNING id, name, email, created_at`,
   [name, email, password_hash]
@@ -82,7 +82,7 @@ const login = async (req, res) => {
     const user = rows[0];
 
     // 2) Comparar contraseña con el hash almacenado
-    const passwordOk = await bcrypt.compare(password, user.password);
+    const passwordOk = await bcrypt.compare(password, user.password_hash);
 
     if (!passwordOk) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
@@ -92,7 +92,7 @@ const login = async (req, res) => {
     const token = generateToken(user.id);
 
     // 4) Responder con el usuario sin exponer el hash
-    const { password: _omit, ...safeUser } = user;
+    const { password_hash: _omit, ...safeUser } = user;
 
     return res.json({ user: safeUser, token });
 

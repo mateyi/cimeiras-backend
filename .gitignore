@@ -142,3 +142,11 @@ vite.config.ts.timestamp-*
 PORT=3000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
+
+echo ".eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjOTQwZTYxOS03YTNjLTRkYTYtOWJlMS1hNjljYWJhNTRkMzAiLCJpYXQiOjE3NzM0MDIxNzgsImV4cCI6MTc3NDAwNjk3OH0.qUaRm7OCI8Cr-7jmOu0FolxwiQFRa2hwE9A70TYi80s
+"uploads/*
+uploads/*
+uploads/.gitkeep
+
+
+echo "logs/" >> .gitignore
