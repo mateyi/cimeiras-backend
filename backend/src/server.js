@@ -11,6 +11,7 @@ const morgan    = require('morgan');
 const winston   = require('winston');
 const path      = require('path');
 const fs        = require('fs');
+const cookieParser = require('cookie-parser');
 
 const userRoutes        = require('./routes/userRoutes');
 const productRoutes     = require('./routes/productRoutes');
@@ -94,9 +95,9 @@ const authLimiter = rateLimit({
 //  PARSING
 // ════════════════════════════════════════════════════════════
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-app.use('/uploads', express.static('uploads'));
-
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 // ════════════════════════════════════════════════════════════
 //  LOGGING HTTP
 // ════════════════════════════════════════════════════════════

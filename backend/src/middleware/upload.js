@@ -1,22 +1,12 @@
 // src/middleware/upload.js
-// Configuración de Multer para subida de imágenes de productos.
-// Guarda los archivos en /uploads con un nombre único.
-
 const multer = require('multer');
 const path   = require('path');
-const crypto = require('crypto');  // módulo nativo de Node, no necesita instalación
+const crypto = require('crypto');
 
-// ── Dónde y cómo guardar los archivos ───────────────────────
 const storage = multer.diskStorage({
-
-  // Carpeta destino: /uploads en la raíz del proyecto
   destination: (_req, _file, cb) => {
     cb(null, 'uploads/');
   },
-
-  // Nombre del archivo: timestamp + 8 bytes random + extensión original
-  // Ejemplo: 1710000000000-a3f8c2d1.jpg
-  // Nunca dos archivos van a tener el mismo nombre
   filename: (_req, file, cb) => {
     const randomPart = crypto.randomBytes(8).toString('hex');
     const ext        = path.extname(file.originalname).toLowerCase();
@@ -24,23 +14,23 @@ const storage = multer.diskStorage({
   },
 });
 
-// ── Filtro: solo imágenes ────────────────────────────────────
 const fileFilter = (_req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+  const allowedExts  = ['.jpg', '.jpeg', '.png', '.webp'];
+  const ext = path.extname(file.originalname).toLowerCase();
 
-  if (allowed.includes(file.mimetype)) {
-    cb(null, true);   // aceptar el archivo
+  if (allowedMimes.includes(file.mimetype) && allowedExts.includes(ext)) {
+    cb(null, true);
   } else {
-    cb(new Error('Formato no permitido. Solo se aceptan JPEG, PNG y WebP'), false);
+    cb(new Error('Solo se aceptan imágenes JPEG, PNG y WebP'), false);
   }
 };
 
-// ── Instancia de Multer ──────────────────────────────────────
 const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,  // máximo 5MB por archivo
+    fileSize: 5 * 1024 * 1024,
   },
 });
 

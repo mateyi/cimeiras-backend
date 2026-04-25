@@ -50,7 +50,13 @@ const { rows } = await db.query(
     const token = generateToken(user.id);
 
     // 201 Created con el usuario (sin password_hash) y el token
-    return res.status(201).json({ user, token });
+    res.cookie('cimeiras_token', token, {
+  httpOnly: true,
+  secure:   process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge:   7 * 24 * 60 * 60 * 1000,
+});
+return res.status(201).json({ user, token });
 
   } catch (err) {
     console.error('[register]', err.message);
@@ -93,8 +99,15 @@ const login = async (req, res) => {
 
     // 4) Responder con el usuario sin exponer el hash
     const { password_hash: _omit, ...safeUser } = user;
+res.cookie('cimeiras_token', token, {
+  httpOnly: true,
+  secure:   process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge:   7 * 24 * 60 * 60 * 1000,
+});
+return res.json({ user: safeUser, token });
 
-    return res.json({ user: safeUser, token });
+    
 
   } catch (err) {
      console.error('[login] ERROR COMPLETO:', err); 
